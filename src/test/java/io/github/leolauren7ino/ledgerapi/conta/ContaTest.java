@@ -69,21 +69,42 @@ public class ContaTest {
     }
 
     @Test
-    void valorZeroEhRejeitado() {
+    void creditarValorZeroEhRejeitado() {
         Conta conta = new Conta(new BigDecimal("100.00"));
         assertThrows(IllegalArgumentException.class, () -> conta.creditar(BigDecimal.ZERO));
         assertSaldo("100.00", conta);
     }
 
     @Test
-    void valorNegativoEhRejeitado() {
+    void creditarValorNegativoEhRejeitado() {
         Conta conta = new Conta(new BigDecimal("100.00"));
         assertThrows(IllegalArgumentException.class, () -> conta.creditar(new BigDecimal("-1.00")));
         assertSaldo("100.00", conta);
     }
 
     @Test
-    void valorComTresCasasDecimaisEhRejeitado() {
+    void debitarValorZeroEhRejeitado() {
+        Conta conta = new Conta(new BigDecimal("100.00"));
+        assertThrows(IllegalArgumentException.class, () -> conta.debitar(BigDecimal.ZERO));
+        assertSaldo("100.00", conta);
+    }
+
+    @Test
+    void debitarValorNegativoEhRejeitado() {
+        Conta conta = new Conta(new BigDecimal("100.00"));
+        assertThrows(IllegalArgumentException.class, () -> conta.debitar(new BigDecimal("-1.00")));
+        assertSaldo("100.00", conta);
+    }
+
+    @Test
+    void debitarNuloEhRejeitado() {
+        Conta conta = new Conta(new BigDecimal("100.00"));
+        assertThrows(IllegalArgumentException.class, () -> conta.debitar(null));
+        assertSaldo("100.00", conta);
+    }
+
+    @Test
+    void creditarValorComTresCasasDecimaisEhRejeitado() {
         Conta conta = new Conta(new BigDecimal("100.00"));
         assertThrows(IllegalArgumentException.class, () -> conta.creditar(new BigDecimal("1.001")));
         assertSaldo("100.00", conta);
