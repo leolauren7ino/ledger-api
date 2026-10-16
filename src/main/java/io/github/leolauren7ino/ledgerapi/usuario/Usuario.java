@@ -12,7 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Usuarios")
+@Table(name = "usuarios")
 public class Usuario {
     @Id 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,5 +39,23 @@ public class Usuario {
         this.perfil = perfil;
     }
 
-    // getters de todos os campos (sem setters)
+     public Long getId() {
+        return id;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getSenhaHash() {
+        return senhaHash;
+    }
+
+    public Perfil getPerfil() {
+        return perfil;
+    }
+
+    public OffsetDateTime getCriadoEm() {
+        return criadoEm;
+    }
 }
