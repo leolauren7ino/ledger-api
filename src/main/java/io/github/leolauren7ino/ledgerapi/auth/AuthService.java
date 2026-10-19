@@ -12,16 +12,16 @@ public class AuthService {
 
     private final UsuarioRepository usuarioRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenService tokenService;   // NOVO
-    private final String hashFalso;            // NOVO
+    private final TokenService tokenService;
+    private final String hashFalso;
 
     public AuthService(UsuarioRepository usuarioRepository,
                        PasswordEncoder passwordEncoder,
-                       TokenService tokenService) {   // NOVO: terceiro parâmetro
+                       TokenService tokenService) {
         this.usuarioRepository = usuarioRepository;
         this.passwordEncoder = passwordEncoder;
-        this.tokenService = tokenService;                                    // NOVO
-        this.hashFalso = passwordEncoder.encode("senha-que-ninguem-usa");    // NOVO
+        this.tokenService = tokenService;
+        this.hashFalso = passwordEncoder.encode("senha-que-ninguem-usa");
     }
 
     public Usuario cadastrar(CadastroRequest request) {
