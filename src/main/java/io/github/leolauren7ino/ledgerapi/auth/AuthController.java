@@ -25,4 +25,10 @@ public class AuthController {
         var usuario = authService.cadastrar(request);
         return new CadastroResponse(usuario.getId(), usuario.getEmail());
     }
+
+    @PostMapping("/login")
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
+        String token = authService.autenticar(request);
+        return new LoginResponse(token, "Bearer");
+    }
 }
