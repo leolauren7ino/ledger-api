@@ -31,9 +31,10 @@ public class TokenService {
         JwtClaimsSet conteudo = JwtClaimsSet.builder()
         // [estudo] sub: de quem é o token.
                 .subject(usuario.getEmail())
+                 // [estudo] iat: quando foi emitido.
                 .issuedAt(agora)
+                //exp: quando vence (agora + o prazo configurado, hoje 60 min).
                 .expiresAt(agora.plus(expiracaoMinutos, ChronoUnit.MINUTES))
-                // [estudo] iat: quando foi emitido. exp: quando vence (agora + o prazo configurado, hoje 60 min).
                 .claim("perfil", usuario.getPerfil().name())
                 .build();
         // [estudo] O cabeçalho declara o algoritmo da assinatura.
