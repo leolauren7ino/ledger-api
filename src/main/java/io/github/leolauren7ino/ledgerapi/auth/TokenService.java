@@ -27,13 +27,19 @@ public class TokenService {
 
     public String gerar(Usuario usuario) {
         Instant agora = Instant.now();
+        // [estudo] O conteúdo do token (claims). Qualquer um consegue LER; a assinatura é que impede alterar.
         JwtClaimsSet conteudo = JwtClaimsSet.builder()
+        // [estudo] sub: de quem é o token.
                 .subject(usuario.getEmail())
+                 // [estudo] iat: quando foi emitido.
                 .issuedAt(agora)
+                //exp: quando vence (agora + o prazo configurado, hoje 60 min).
                 .expiresAt(agora.plus(expiracaoMinutos, ChronoUnit.MINUTES))
                 .claim("perfil", usuario.getPerfil().name())
                 .build();
+        // [estudo] O cabeçalho declara o algoritmo da assinatura.
         JwsHeader cabecalho = JwsHeader.with(MacAlgorithm.HS256).build();
+        // [estudo] O encoder assina com a chave e devolve o texto final: cabeçalho.conteúdo.assinatura.
         return encoder.encode(JwtEncoderParameters.from(cabecalho, conteudo)).getTokenValue();
     }
 }
