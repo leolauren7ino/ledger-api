@@ -27,13 +27,13 @@ public class TokenService {
 
     public String gerar(Usuario usuario) {
         Instant agora = Instant.now();
-         // [estudo] O conteúdo do token (claims). Qualquer um consegue LER; a assinatura é que impede alterar.
+        // [estudo] O conteúdo do token (claims). Qualquer um consegue LER; a assinatura é que impede alterar.
         JwtClaimsSet conteudo = JwtClaimsSet.builder()
-         // [estudo] sub: de quem é o token.
+        // [estudo] sub: de quem é o token.
                 .subject(usuario.getEmail())
                 .issuedAt(agora)
                 .expiresAt(agora.plus(expiracaoMinutos, ChronoUnit.MINUTES))
-                // [estudo] iat: quando foi emitido. exp: quando vence (agora + 60 min).
+                // [estudo] iat: quando foi emitido. exp: quando vence (agora + o prazo configurado, hoje 60 min).
                 .claim("perfil", usuario.getPerfil().name())
                 .build();
         // [estudo] O cabeçalho declara o algoritmo da assinatura.

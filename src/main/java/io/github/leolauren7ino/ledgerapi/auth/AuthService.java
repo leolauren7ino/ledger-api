@@ -37,11 +37,11 @@ public class AuthService {
         String email = request.email().trim().toLowerCase();
         // [estudo] orElse(null): se o e-mail não existe, segue com usuario = null (sem lançar erro aqui).
         Usuario usuario = usuarioRepository.findByEmail(email).orElse(null);
-         // [estudo] Se o e-mail não existe, confere contra um hash falso. Assim o BCrypt roda nos dois casos
+        // [estudo] Se o e-mail não existe, confere contra um hash falso. Assim o BCrypt roda nos dois casos
         // [estudo] e o tempo de resposta não revela quais e-mails têm conta.
         String hash = (usuario != null) ? usuario.getSenhaHash() : hashFalso;
         boolean senhaConfere = passwordEncoder.matches(request.senha(), hash);
-         // [estudo] Mesma exceção (401) para e-mail inexistente e senha errada: a resposta também não revela nada.
+        // [estudo] Mesma exceção (401) para e-mail inexistente e senha errada: a resposta também não revela nada.
         if (usuario == null || !senhaConfere) {
             throw new CredenciaisInvalidasException();
         }
