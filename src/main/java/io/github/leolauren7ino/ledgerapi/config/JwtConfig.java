@@ -20,16 +20,20 @@ import com.nimbusds.jose.jwk.source.ImmutableSecret;
 @Configuration
 public class JwtConfig {
 
-    // [estudo] A chave que assina E confere os tokens. É a mesma para os dois lados.
+    // [estudo] A chave que assina E confere os tokens. É a mesma para os dois
+    // lados.
     private final SecretKey chave;
 
-    // [estudo] @Value lê app.jwt.secret do application.properties, que lê a variável JWT_SECRET do ambiente.
+    // [estudo] @Value lê app.jwt.secret do application.properties, que lê a
+    // variável JWT_SECRET do ambiente.
     public JwtConfig(@Value("${app.jwt.secret}") String segredo) {
-        // [estudo] Texto -> bytes (UTF-8 declarado) -> chave para o algoritmo HMAC-SHA256 (o HS256).
+        // [estudo] Texto -> bytes (UTF-8 declarado) -> chave para o algoritmo
+        // HMAC-SHA256 (o HS256).
         this.chave = new SecretKeySpec(segredo.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
     }
 
-    // [estudo] O conferidor: refaz a conta da assinatura e checa a validade. Só aceita HS256.
+    // [estudo] O conferidor: refaz a conta da assinatura e checa a validade. Só
+    // aceita HS256.
     @Bean
     JwtDecoder jwtDecoder() {
         return NimbusJwtDecoder.withSecretKey(chave).macAlgorithm(MacAlgorithm.HS256).build();
