@@ -67,4 +67,23 @@ class AuthControllerTest {
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.title").value("E-mail já cadastrado"));
     }
+
+        @Test
+    void loginCertoDevolve200ComToken() throws Exception {
+        String corpo = """
+                {"email":"login.certo@exemplo.com","senha":"senha-forte-123"}
+                """;
+
+        mockMvc.perform(post("/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(corpo))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(corpo))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.tipo").value("Bearer"))
+                .andExpect(jsonPath("$.token").isNotEmpty());
+    }
 }
