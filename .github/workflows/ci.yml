@@ -35,7 +35,7 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'
@@ -46,3 +46,33 @@ jobs:
 
       - name: Rodar os testes
         run: ./mvnw --batch-mode test
+
+  compose:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Criar o .env a partir do exemplo
+        run: cp .env.example .env
+
+      - name: Subir tudo do zero
+        run: docker compose up -d --build --wait
+
+      - name: Conferir que o app responde
+        run: |
+          for i in $(seq 1 30); do
+            codigo=$(curl -s -o /dev/null -w "%{http_code}" localhost:8080/me || true)
+            echo "tentativa $i: $codigo"
+            if [ "$codigo" = "401" ]; then exit 0; fi
+            sleep 2
+          done
+          exit 1
+
+      - name: Mostrar os logs se algo falhou
+        if: failure()
+        run: docker compose logs
+
+      - name: Derrubar tudo
+        if: always()
+        run: docker compose down -v
