@@ -3,6 +3,7 @@ package io.github.leolauren7ino.ledgerapi.auth;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,5 +86,37 @@ class AuthControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.tipo").value("Bearer"))
                 .andExpect(jsonPath("$.token").isNotEmpty());
+    }
+
+        @Test
+    void senhaErradaEEmailInexistenteDevolvemOMesmo401() throws Exception {
+        String cadastro = """
+                {"email":"login.errado@exemplo.com","senha":"senha-forte-123"}
+                """;
+        String senhaErrada = """
+                {"email":"login.errado@exemplo.com","senha":"senha-errada-123"}
+                """;
+        String emailInexistente = """
+                {"email":"ninguem.aqui@exemplo.com","senha":"senha-errada-123"}
+                """;
+
+        mockMvc.perform(post("/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(cadastro))
+                .andExpect(status().isCreated());
+
+        String respostaSenhaErrada = mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(senhaErrada))
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getContentAsString();
+
+        String respostaEmailInexistente = mockMvc.perform(post("/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(emailInexistente))
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getContentAsString();
+
+        assertEquals(respostaSenhaErrada, respostaEmailInexistente);
     }
 }
