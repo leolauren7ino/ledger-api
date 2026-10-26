@@ -1,5 +1,7 @@
 # Ledger API
 
+[![CI](https://github.com/leolauren7ino/ledger-api/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/leolauren7ino/ledger-api/actions/workflows/ci.yml)
+
 [Leia em português](README.md)
 
 Simplified banking REST API built with Java 21 and Spring Boot 4.

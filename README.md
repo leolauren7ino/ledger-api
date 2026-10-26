@@ -1,5 +1,7 @@
 # Ledger API
 
+[![CI](https://github.com/leolauren7ino/ledger-api/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/leolauren7ino/ledger-api/actions/workflows/ci.yml)
+
 [Read in English](README.en.md)
 
 API REST de um banco simplificado (contas e transferências), feita com Java 21 e Spring Boot 4.
