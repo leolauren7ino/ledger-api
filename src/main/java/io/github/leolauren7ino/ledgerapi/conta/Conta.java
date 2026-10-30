@@ -39,7 +39,7 @@ public class Conta {
     public Conta(String numero, Long usuarioId) {
         this.numero = numero;
         this.usuarioId = usuarioId;
-        this.saldo = BigDecimal.ZERO;
+        this.saldo = BigDecimal.ZERO.setScale(2);
     }
 
     public Conta(BigDecimal saldoInicial) {
