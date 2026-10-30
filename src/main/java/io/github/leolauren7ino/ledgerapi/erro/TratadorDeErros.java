@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import io.github.leolauren7ino.ledgerapi.auth.CredenciaisInvalidasException;
 import io.github.leolauren7ino.ledgerapi.auth.EmailJaCadastradoException;
+import io.github.leolauren7ino.ledgerapi.conta.ContaNaoEncontradaException;
 
 // [estudo] Funil de erros: toda exceção lançada num controller passa por aqui antes de virar resposta.
 @RestControllerAdvice
@@ -20,7 +21,8 @@ public class TratadorDeErros {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ProblemDetail dadosInvalidos(MethodArgumentNotValidException ex) {
         Map<String, String> erros = new LinkedHashMap<>();
-        // [estudo] Cada violação do @NotBlank, @Email ou @Size vira um par: nome do campo -> a mensagem que escrevemos.
+        // [estudo] Cada violação do @NotBlank, @Email ou @Size vira um par: nome do
+        // campo -> a mensagem que escrevemos.
         ex.getBindingResult().getFieldErrors()
                 .forEach(e -> erros.put(e.getField(), e.getDefaultMessage()));
         ProblemDetail problema = ProblemDetail.forStatusAndDetail(
@@ -40,9 +42,17 @@ public class TratadorDeErros {
 
     @ExceptionHandler(CredenciaisInvalidasException.class)
     public ProblemDetail credenciaisInvalidas(CredenciaisInvalidasException ex) {
-        // [estudo] A mesma mensagem para e-mail inexistente e senha errada: a resposta não revela quais e-mails existem.
+        // [estudo] A mesma mensagem para e-mail inexistente e senha errada: a resposta
+        // não revela quais e-mails existem.
         ProblemDetail problema = ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
         problema.setTitle("Credenciais inválidas");
+        return problema;
+    }
+
+    @ExceptionHandler(ContaNaoEncontradaException.class)
+    public ProblemDetail contaNaoEncontrada(ContaNaoEncontradaException ex) {
+        ProblemDetail problema = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        problema.setTitle("Conta não encontrada");
         return problema;
     }
 }
