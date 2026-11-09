@@ -31,9 +31,23 @@ class ContaControllerTest {
 
     @Test
     void abrirContaComTokenDevolve201SemExporODono() throws Exception {
+        String token = tokenDe("conta.dona@exemplo.com");
+
+        String respostaConta = mockMvc.perform(post("/contas")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").exists())
+                .andExpect(jsonPath("$.usuarioId").doesNotExist())
+                .andReturn().getResponse().getContentAsString();
+
+        String numero = JsonPath.read(respostaConta, "$.numero");
+        assertTrue(numero.matches("\\d{10}"));
+    }
+
+    private String tokenDe(String email) throws Exception {
         String corpo = """
-                {"email":"conta.dona@exemplo.com","senha":"senha-forte-123"}
-                """;
+                {"email":"%s","senha":"senha-forte-123"}
+                """.formatted(email);
 
         mockMvc.perform(post("/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -46,16 +60,6 @@ class ContaControllerTest {
                 .andExpect(status().isOk())
                 .andReturn().getResponse().getContentAsString();
 
-        String token = JsonPath.read(respostaLogin, "$.token");
-
-        String respostaConta = mockMvc.perform(post("/contas")
-                        .header("Authorization", "Bearer " + token))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").exists())
-                .andExpect(jsonPath("$.usuarioId").doesNotExist())
-                .andReturn().getResponse().getContentAsString();
-
-        String numero = JsonPath.read(respostaConta, "$.numero");
-        assertTrue(numero.matches("\\d{10}"));
+        return JsonPath.read(respostaLogin, "$.token");
     }
 }
