@@ -1,8 +1,12 @@
 package io.github.leolauren7ino.ledgerapi.conta;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -22,6 +26,19 @@ public class ContaController {
     @ResponseStatus(HttpStatus.CREATED)
     public ContaResponse abrir(@AuthenticationPrincipal Jwt jwt) {
         Conta conta = contaService.abrir(jwt.getSubject());
-        return new ContaResponse(conta.getId(), conta.getNumero(), conta.getSaldo());
+        return ContaResponse.de(conta);
+    }
+
+    @GetMapping
+    public List<ContaResponse> listar(@AuthenticationPrincipal Jwt jwt) {
+        return contaService.listar(jwt.getSubject()).stream()
+                .map(ContaResponse::de)
+                .toList();
+    }
+
+    @GetMapping("/{id}")
+    public ContaResponse buscar(@AuthenticationPrincipal Jwt jwt, @PathVariable Long id) {
+        Conta conta = contaService.buscar(jwt.getSubject(),id);
+        return ContaResponse.de(conta);
     }
 }
